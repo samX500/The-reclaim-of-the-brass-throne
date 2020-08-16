@@ -11,5 +11,5 @@ Position GameObject::getPosition() {
 }
 
 void GameObject::move(Position position) {
-    this->position = position
+    this->position = position;
 }

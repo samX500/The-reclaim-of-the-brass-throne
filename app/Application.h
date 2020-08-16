@@ -6,12 +6,14 @@
 #define UNTITLEDROGUELIKEGAME_APPLICATION_H
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include "../Input.h"
 
 class Application {
     int x;
     int y;
     int acceleration;
     sf::RenderWindow* window;
+    Input input;
 
     bool gameIsRunning;
 

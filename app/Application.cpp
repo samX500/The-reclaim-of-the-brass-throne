@@ -10,73 +10,64 @@
 
 double MS_PER_UPDATE = 20;
 
-    Application::Application():x(0),y(0),acceleration(10) {
+Application::Application() : x(0), y(0), acceleration(10), input() {
 
-        gameIsRunning=true;
-        window = new sf::RenderWindow(sf::VideoMode(800, 600), "My window");
+    gameIsRunning = true;
+    window = new sf::RenderWindow(sf::VideoMode(800, 600), "My window");
 
-    }
+}
 
-    void Application::start() {
+void Application::start() {
 
-        double previousTime = std::chrono::steady_clock::now().time_since_epoch().count();
-        double lag=0;
-        while(window->isOpen()){
-            double currentTime = std::chrono::steady_clock::now().time_since_epoch().count();
-            double elapsedTime = currentTime-previousTime;
-            previousTime = currentTime;
-            lag += elapsedTime;
+    double previousTime = std::chrono::steady_clock::now().time_since_epoch().count();
+    double lag = 0;
+    while (window->isOpen()) {
+        double currentTime = std::chrono::steady_clock::now().time_since_epoch().count();
+        double elapsedTime = currentTime - previousTime;
+        previousTime = currentTime;
+        lag += elapsedTime;
 
-            processInput();
+        processInput();
 
-            while(lag >= MS_PER_UPDATE)
-            {
-                update();
-                lag-=MS_PER_UPDATE;
-            }
-
-            render();
+        while (lag >= MS_PER_UPDATE) {
+            update();
+            lag -= MS_PER_UPDATE;
         }
+
+        render();
     }
+}
 
-    void Application::processInput() {
-        sf::Event event;
+void Application::processInput() {
+    sf::Event event;
 
-        while (window->pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window->close();
-            else if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::W)
-                    y += -acceleration;
-                if(event.key.code == sf::Keyboard::S)
-                    y += acceleration;
-                if(event.key.code == sf::Keyboard::A)
-                    x += -acceleration;
-                if(event.key.code == sf::Keyboard::D)
-                    x += acceleration;
-            }
-        }
+    while (window->pollEvent(event)) {
+        if (event.type == sf::Event::Closed)
+            window->close();
+        Command* command = input.getInput(event);
+        command->execute();
     }
+}
 
-    void Application::update() {
 
-    }
+void Application::update() {
 
-    void Application::render() {
-        window->setActive();
+}
 
-        window->clear(sf::Color::Black);
+void Application::render() {
+    window->setActive();
 
-        sf::RectangleShape rectangle;
-        rectangle.setSize(sf::Vector2f(100, 50));
-        rectangle.setOutlineColor(sf::Color::Red);
-        rectangle.setFillColor(sf::Color::Red);
-        rectangle.setOutlineThickness(5);
-        rectangle.setPosition(x, y);
+    window->clear(sf::Color::Black);
 
-        window->draw(rectangle);
+    sf::RectangleShape rectangle;
+    rectangle.setSize(sf::Vector2f(100, 50));
+    rectangle.setOutlineColor(sf::Color::Red);
+    rectangle.setFillColor(sf::Color::Red);
+    rectangle.setOutlineThickness(5);
+    rectangle.setPosition(x, y);
 
-        window->display();
-    }
+    window->draw(rectangle);
+
+    window->display();
+}
 
